@@ -1,3 +1,5 @@
+import { HomeSeoFaq } from "@/app/components/HomeSeoFaq";
+import { HomeSeoIntro } from "@/app/components/HomeSeoIntro";
 import { WebsiteAuditClient } from "@/app/components/website-audit/WebsiteAuditClient";
 
 export default function HomePage() {
@@ -12,7 +14,10 @@ export default function HomePage() {
           JavaScript in your browser.
         </p>
       </noscript>
-      <WebsiteAuditClient />
+      <WebsiteAuditClient
+        seoIntro={<HomeSeoIntro />}
+        seoFaq={<HomeSeoFaq />}
+      />
     </main>
   );
 }

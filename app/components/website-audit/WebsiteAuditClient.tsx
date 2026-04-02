@@ -3,6 +3,7 @@
 import { Button, Container, Divider, Stack, Typography } from "@mui/material";
 import axios from "axios";
 import { motion } from "framer-motion";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { AnalysisLoadingOverlay } from "@/components/feedback/AnalysisLoadingOverlay";
 import { ScoreCardsRow } from "@/components/cards/ScoreCardsRow";
@@ -27,7 +28,13 @@ import {
 import { LINKS } from "@/helpers/doc-links";
 import type { PageSpeedApiResponse } from "@/helpers/types/pagespeed";
 
-export function WebsiteAuditClient() {
+export function WebsiteAuditClient({
+  seoIntro,
+  seoFaq,
+}: {
+  seoIntro: ReactNode;
+  seoFaq: ReactNode;
+}) {
   const [url, setUrl] = useState("");
   const [strategy, setStrategy] = useState<LabStrategy>("mobile");
   const [error, setError] = useState<string | null>(null);
@@ -90,15 +97,18 @@ export function WebsiteAuditClient() {
       >
         <Container maxWidth="lg">
           <Stack gap={6}>
-            <LandingHero
-              url={url}
-              onUrlChange={setUrl}
-              strategy={strategy}
-              onStrategyChange={setStrategy}
-              onAnalyze={handleAnalyze}
-              loading={loading}
-              error={error}
-            />
+            <Stack gap={2} sx={{ maxWidth: 720 }}>
+              {seoIntro}
+              <LandingHero
+                url={url}
+                onUrlChange={setUrl}
+                strategy={strategy}
+                onStrategyChange={setStrategy}
+                onAnalyze={handleAnalyze}
+                loading={loading}
+                error={error}
+              />
+            </Stack>
 
             {dashboard && !loading ? (
               <Stack
@@ -311,6 +321,8 @@ export function WebsiteAuditClient() {
                 </Stack>
               </Stack>
             ) : null}
+
+            {seoFaq}
           </Stack>
         </Container>
       </Stack>

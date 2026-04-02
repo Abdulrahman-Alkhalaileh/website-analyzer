@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+/* Matches MUI theme typography + hero column (maxWidth 720, text.secondary-ish). */
+.seo-intro {
+  max-width: 720px;
+}
+
+.seo-intro__title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: rgba(255, 255, 255, 0.92);
+  line-height: 1.2;
+}
+
+@media (min-width: 900px) {
+  .seo-intro__title {
+    font-size: 2.5rem;
+  }
+}
+
+.seo-intro__lead {
+  margin-top: 12px;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.seo-faq {
+  max-width: 720px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.seo-faq__title {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+  margin-bottom: 16px;
+}
+
+.seo-faq__list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.seo-faq__q {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.seo-faq__a {
+  margin-top: 6px;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.62);
+}

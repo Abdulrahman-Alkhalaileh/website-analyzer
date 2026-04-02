@@ -38,15 +38,12 @@ export function LandingHero({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       gap={3}
-      sx={{ maxWidth: 720 }}
     >
       <Typography
-        variant="overline"
-        sx={{ color: "primary.light", letterSpacing: "0.2em", fontWeight: 600 }}
+        variant="h3"
+        component="h2"
+        sx={{ fontSize: { xs: "1.85rem", md: "2.5rem" } }}
       >
-        Instant Website Audit
-      </Typography>
-      <Typography variant="h3" component="h1" sx={{ fontSize: { xs: "1.85rem", md: "2.5rem" } }}>
         See what&apos;s slowing your site down
       </Typography>
       <Typography variant="body1" color="text.secondary" sx={{ lineHeight: 1.7 }}>
