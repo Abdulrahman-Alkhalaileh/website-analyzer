@@ -6,7 +6,7 @@ import axios from "axios";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { AnalysisLoadingOverlay } from "@/components/feedback/AnalysisLoadingOverlay";
+import { AnalysisLoadingOverlay } from "@/app/components/website-audit/AnalysisLoadingOverlay";
 import { LandingBackdrop } from "@/components/feedback/LandingBackdrop";
 import { ResultsHero } from "@/components/feedback/ResultsHero";
 import { ThemeModeToggle } from "@/components/feedback/ThemeModeToggle";
