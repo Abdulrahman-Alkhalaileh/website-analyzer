@@ -16,9 +16,21 @@ import type { IssueItem } from "@/helpers/audit";
 import { LINKS } from "@/helpers/doc-links";
 import { insightLabel, issueSeverityFromScore, type InsightSeverity } from "@/helpers/severity";
 
+const DEFAULT_NO_ISSUES =
+  "No failing audits stood out in this run. Re-run after you ship changes to catch regressions.";
+
+const DEFAULT_LIST_INTRO =
+  "Color = impact: red rows are usually the worst Lighthouse scores in this run. The audit id (monospace) matches Lighthouse; official docs live on Chrome for Developers—see links below (we avoid guessing per-audit URLs that often 404).";
+
 export interface IssuesSectionProps {
   issues: IssueItem[];
   embedded?: boolean;
+  /** Empty state when `issues` is empty */
+  noIssuesMessage?: string;
+  /** Intro above the list; omit the intro when `null`; default copy when omitted */
+  listIntro?: string | null;
+  /** Extra links under “Official documentation” */
+  extraDocLinks?: readonly { href: string; label: string }[];
 }
 
 function severityMuiColor(
@@ -37,11 +49,16 @@ function borderForSeverity(s: InsightSeverity): string {
   return "info.main";
 }
 
-export function IssuesSection({ issues, embedded }: IssuesSectionProps) {
+export function IssuesSection({
+  issues,
+  embedded,
+  noIssuesMessage = DEFAULT_NO_ISSUES,
+  listIntro = DEFAULT_LIST_INTRO,
+  extraDocLinks,
+}: IssuesSectionProps) {
   const innerEmpty = (
     <Alert severity="success" variant="outlined">
-      No failing audits stood out in this run. Re-run after you ship changes to
-      catch regressions.
+      {noIssuesMessage}
     </Alert>
   );
 
@@ -62,12 +79,11 @@ export function IssuesSection({ issues, embedded }: IssuesSectionProps) {
 
   const list = (
     <Stack gap={1.5}>
-      <Typography variant="body2" color="text.secondary">
-        Color = impact: red rows are usually the worst Lighthouse scores in this
-        run. The audit id (monospace) matches Lighthouse; official docs live on
-        Chrome for Developers—see links below (we don&apos;t guess per-audit URLs
-        that often 404).
-      </Typography>
+      {listIntro ? (
+        <Typography variant="body2" color="text.secondary">
+          {listIntro}
+        </Typography>
+      ) : null}
       <List disablePadding sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
         {issues.map((issue, index) => {
           const sev = issueSeverityFromScore(issue.score);
@@ -139,6 +155,18 @@ export function IssuesSection({ issues, embedded }: IssuesSectionProps) {
             Performance audits &amp; scoring ↗
           </Link>
         </Typography>
+        {extraDocLinks?.map((link) => (
+          <Typography key={link.href} variant="caption" color="text.secondary">
+            <Link
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              fontWeight={600}
+            >
+              {link.label}
+            </Link>
+          </Typography>
+        ))}
       </Stack>
     </Stack>
   );

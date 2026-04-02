@@ -1,6 +1,7 @@
 "use client";
 
 import { Chip, Paper, Stack, Typography } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { animate, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import type { ScoreBand } from "@/helpers/audit";
@@ -51,14 +52,23 @@ export function ScoreCard({ label, score, delay }: ScoreCardProps) {
       transition={{ delay: delay / 1000, duration: 0.45 }}
       whileHover={{ y: -4, transition: { duration: 0.2 } }}
       elevation={0}
-      sx={(theme) => ({
-        flex: 1,
-        minWidth: 140,
-        p: 2.5,
-        border: 1,
-        borderColor: "divider",
-        background: `linear-gradient(145deg, ${theme.palette.background.paper} 0%, rgba(20,20,20,0.96) 100%)`,
-      })}
+      sx={(theme) => {
+        const isDark = theme.palette.mode === "dark";
+        const bottom = isDark
+          ? alpha("#000000", 0.45)
+          : alpha(theme.palette.primary.main, 0.06);
+        return {
+          flex: 1,
+          minWidth: 140,
+          p: 2.5,
+          border: 1,
+          borderColor: "divider",
+          background: `linear-gradient(145deg, ${theme.palette.background.paper} 0%, ${bottom} 100%)`,
+          boxShadow: isDark
+            ? `0 1px 0 ${alpha("#fff", 0.05)} inset`
+            : `0 1px 0 ${alpha("#fff", 0.95)} inset`,
+        };
+      }}
     >
       <Stack gap={1.5}>
         <Typography variant="body2" color="text.secondary" fontWeight={600}>
@@ -92,12 +102,15 @@ export function ScoreCard({ label, score, delay }: ScoreCardProps) {
                   ? "Room to improve"
                   : "Needs attention"
           }
-          sx={(theme) => ({
-            alignSelf: "flex-start",
-            bgcolor: `${bandColor(band, theme.palette)}22`,
-            color: bandColor(band, theme.palette),
-            fontWeight: 600,
-          })}
+          sx={(theme) => {
+            const c = bandColor(band, theme.palette);
+            return {
+              alignSelf: "flex-start",
+              bgcolor: alpha(c, theme.palette.mode === "dark" ? 0.22 : 0.14),
+              color: c,
+              fontWeight: 600,
+            };
+          }}
         />
       </Stack>
     </Paper>

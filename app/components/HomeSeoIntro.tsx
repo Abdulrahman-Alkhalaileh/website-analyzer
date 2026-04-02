@@ -1,6 +1,6 @@
 import { SITE_NAME, SITE_PAGE_INTRO } from "@/helpers/site";
 
-/** Server-rendered h1 + one line; sits in the same column as the hero. */
+/** Server-rendered heading + lead; hero below carries the display headline (h2). */
 export function HomeSeoIntro() {
   return (
     <header className="seo-intro">

@@ -1,5 +1,6 @@
 import type {
   LighthouseAudit,
+  LighthouseResult,
   PageSpeedApiResponse,
 } from "@/helpers/types/pagespeed";
 import { normalizeImageDataUrl } from "@/helpers/utils/image";
@@ -88,6 +89,8 @@ export interface AuditDashboard {
   entities: EntityRow[];
   runWarnings: string[];
   networkHighlights: NetworkHighlight[];
+  /** Failing audits that belong to Lighthouse’s SEO category only */
+  seoIssues: IssueItem[];
 }
 
 export type {
@@ -249,6 +252,19 @@ const METRIC_AUDIT_IDS = new Set([
   "experimental-interaction-to-next-paint",
 ]);
 
+function auditToIssueItem(audit: LighthouseAudit): IssueItem {
+  return {
+    id: audit.id,
+    title: audit.title,
+    score: audit.score,
+    friendly:
+      FRIENDLY_AUDIT[audit.id] ??
+      (audit.title
+        ? `${audit.title} — worth fixing for a faster, clearer experience.`
+        : "Improve this audit to lift your score."),
+  };
+}
+
 function buildIssues(audits: Record<string, LighthouseAudit>): IssueItem[] {
   const candidates: LighthouseAudit[] = [];
   for (const audit of Object.values(audits)) {
@@ -260,16 +276,33 @@ function buildIssues(audits: Record<string, LighthouseAudit>): IssueItem[] {
     candidates.push(audit);
   }
   candidates.sort((a, b) => (a.score ?? 1) - (b.score ?? 1));
-  return candidates.slice(0, 10).map((audit) => ({
-    id: audit.id,
-    title: audit.title,
-    score: audit.score,
-    friendly:
-      FRIENDLY_AUDIT[audit.id] ??
-      (audit.title
-        ? `${audit.title} — worth fixing for a faster, clearer experience.`
-        : "Improve this audit to lift your score."),
-  }));
+  return candidates.slice(0, 10).map(auditToIssueItem);
+}
+
+/**
+ * Failing audits scoped to one Lighthouse category (e.g. `seo`), using that
+ * category’s auditRefs so SEO/accessibility items aren’t dropped when the
+ * global “top 10” list is performance-heavy.
+ */
+function buildIssuesForCategory(
+  lr: LighthouseResult,
+  categoryId: string
+): IssueItem[] {
+  const refs = lr.categories[categoryId]?.auditRefs;
+  if (!refs?.length) return [];
+  const refIds = new Set(refs.map((r) => r.id));
+  const candidates: LighthouseAudit[] = [];
+  for (const audit of Object.values(lr.audits)) {
+    if (!refIds.has(audit.id)) continue;
+    if (METRIC_AUDIT_IDS.has(audit.id)) continue;
+    if (audit.score === null || audit.score >= 1) continue;
+    if (audit.scoreDisplayMode === "notApplicable") continue;
+    if (audit.scoreDisplayMode === "manual") continue;
+    if (audit.scoreDisplayMode === "informative") continue;
+    candidates.push(audit);
+  }
+  candidates.sort((a, b) => (a.score ?? 1) - (b.score ?? 1));
+  return candidates.map(auditToIssueItem);
 }
 
 const NETWORK_AUDIT_LABELS: [string, string][] = [
@@ -332,6 +365,7 @@ export function buildAuditDashboard(
   const finalScreenshotSrc = extractFinalScreenshotSrc(audits);
 
   const issues = buildIssues(audits);
+  const seoIssues = buildIssuesForCategory(lr, "seo");
 
   const labStrategy = inferLabStrategy(lr);
 
@@ -381,5 +415,6 @@ export function buildAuditDashboard(
     entities,
     runWarnings,
     networkHighlights,
+    seoIssues,
   };
 }

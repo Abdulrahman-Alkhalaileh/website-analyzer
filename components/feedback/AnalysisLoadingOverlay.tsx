@@ -1,6 +1,13 @@
 "use client";
 
-import { CircularProgress, LinearProgress, Stack, Typography } from "@mui/material";
+import {
+  CircularProgress,
+  LinearProgress,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
@@ -23,8 +30,10 @@ export function AnalysisLoadingOverlay({
   open,
   targetUrl,
 }: AnalysisLoadingOverlayProps) {
+  const theme = useTheme();
   const [stepIndex, setStepIndex] = useState(0);
   const [fakeProgress, setFakeProgress] = useState(8);
+  const isDark = theme.palette.mode === "dark";
 
   useEffect(() => {
     if (!open) return;
@@ -47,6 +56,18 @@ export function AnalysisLoadingOverlay({
 
   if (!open) return null;
 
+  const scrim = isDark
+    ? alpha("#000000", 0.72)
+    : alpha("#0f172a", 0.36);
+
+  const panelBg = isDark
+    ? `linear-gradient(155deg, ${alpha("#fff", 0.08)} 0%, ${alpha("#fff", 0.02)} 40%, ${alpha(theme.palette.primary.main, 0.1)} 100%)`
+    : `linear-gradient(155deg, ${alpha("#fff", 0.58)} 0%, ${alpha("#fff", 0.28)} 42%, ${alpha(theme.palette.primary.main, 0.12)} 100%)`;
+
+  const panelShadow = isDark
+    ? `0 0 0 1px ${alpha("#fff", 0.05)}, 0 28px 80px -20px rgba(0,0,0,0.65), 0 0 60px -20px ${alpha(theme.palette.primary.main, 0.25)}`
+    : `0 0 0 1px ${alpha("#fff", 0.55)}, 0 0 0 1px ${alpha("#0f172a", 0.06)} inset, 0 20px 48px -12px ${alpha("#0f172a", 0.12)}, 0 0 48px -14px ${alpha(theme.palette.primary.main, 0.22)}`;
+
   return (
     <Stack
       component={motion.div}
@@ -61,21 +82,31 @@ export function AnalysisLoadingOverlay({
         zIndex: (t) => t.zIndex.modal + 2,
         alignItems: "center",
         justifyContent: "center",
-        bgcolor: "rgba(5,5,5,0.78)",
-        backdropFilter: "blur(10px)",
+        bgcolor: scrim,
+        backdropFilter: isDark ? "blur(10px)" : "blur(14px)",
       }}
     >
       <Stack
+        component={motion.div}
+        initial={{ opacity: 0, scale: 0.94, y: 12 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 320, damping: 28 }}
         gap={3}
         sx={{
-          maxWidth: 440,
+          boxSizing: "border-box",
+          width: "min(440px, calc(100vw - 32px))",
+          flexShrink: 0,
           mx: 2,
           p: { xs: 3, sm: 4 },
           borderRadius: 3,
           border: 1,
-          borderColor: "divider",
-          bgcolor: "rgba(20,20,20,0.92)",
-          boxShadow: "0 0 0 1px rgba(139,92,246,0.15), 0 24px 80px rgba(0,0,0,0.65)",
+          borderColor: isDark ? alpha("#fff", 0.1) : alpha("#fff", 0.72),
+          background: panelBg,
+          backdropFilter: isDark
+            ? "blur(20px)"
+            : "blur(24px) saturate(1.15)",
+          boxShadow: panelShadow,
+          overflow: "hidden",
         }}
       >
         <Stack alignItems="center" gap={2}>
@@ -85,7 +116,7 @@ export function AnalysisLoadingOverlay({
                 position: "absolute",
                 inset: 0,
                 borderRadius: "50%",
-                border: "2px solid rgba(139,92,246,0.35)",
+                border: `2px solid ${alpha(theme.palette.primary.main, 0.4)}`,
               }}
               animate={{ rotate: 360 }}
               transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
@@ -95,7 +126,7 @@ export function AnalysisLoadingOverlay({
                 position: "absolute",
                 inset: 8,
                 borderRadius: "50%",
-                border: "2px solid rgba(56,189,248,0.4)",
+                border: `2px solid ${alpha(theme.palette.secondary.main, 0.45)}`,
               }}
               animate={{ rotate: -360 }}
               transition={{ duration: 5.5, repeat: Infinity, ease: "linear" }}
@@ -132,7 +163,13 @@ export function AnalysisLoadingOverlay({
             </Typography>
             <Typography
               variant="caption"
-              sx={{ fontFeatureSettings: '"tnum"', color: "primary.light" }}
+              component="span"
+              sx={{
+                fontVariantNumeric: "tabular-nums",
+                color: "primary.main",
+                minWidth: "2.75em",
+                textAlign: "right",
+              }}
             >
               {Math.min(99, Math.round(fakeProgress))}%
             </Typography>
@@ -143,11 +180,10 @@ export function AnalysisLoadingOverlay({
             sx={{
               height: 8,
               borderRadius: 4,
-              bgcolor: "rgba(255,255,255,0.06)",
+              bgcolor: alpha(theme.palette.text.primary, isDark ? 0.1 : 0.08),
               "& .MuiLinearProgress-bar": {
                 borderRadius: 4,
-                background: (t) =>
-                  `linear-gradient(90deg, ${t.palette.primary.dark}, ${t.palette.secondary.main})`,
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
               },
             }}
           />
@@ -159,7 +195,11 @@ export function AnalysisLoadingOverlay({
           ))}
         </Stack>
 
-        <Stack minHeight={56} justifyContent="center">
+        <Stack
+          minHeight={{ xs: 68, sm: 56 }}
+          justifyContent="center"
+          sx={{ width: "100%" }}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={stepIndex}
@@ -167,8 +207,20 @@ export function AnalysisLoadingOverlay({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.35 }}
+              style={{ width: "100%" }}
             >
-              <Typography variant="body2" color="text.secondary" textAlign="center">
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                textAlign="center"
+                sx={{
+                  width: "100%",
+                  minHeight: "3.25em",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 {STEPS[stepIndex]}
               </Typography>
             </motion.div>
@@ -180,13 +232,20 @@ export function AnalysisLoadingOverlay({
 }
 
 function WaveBar({ index }: { index: number }) {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+  const p = theme.palette.primary.main;
+  const s = theme.palette.secondary.main;
+  const background = isDark
+    ? `linear-gradient(180deg, ${alpha(p, 0.95)}, ${alpha(s, 0.78)})`
+    : `linear-gradient(180deg, ${alpha(p, 0.88)}, ${alpha(s, 0.75)})`;
+
   return (
     <motion.div
       style={{
         width: 5,
         borderRadius: 3,
-        background:
-          "linear-gradient(180deg, rgba(139,92,246,0.95), rgba(56,189,248,0.75))",
+        background,
       }}
       animate={{
         height: [12, 28 + (index % 5) * 6, 14, 32, 12],

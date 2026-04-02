@@ -10,6 +10,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import type { DashboardSeverity } from "@/helpers/severity";
 import { dashboardSeverityToInsight, insightLabel } from "@/helpers/severity";
 
@@ -44,34 +45,43 @@ export function DashboardSection({
       disableGutters
       elevation={0}
       id={`section-${id}`}
-      sx={(t) => ({
-        border: 1,
-        borderColor: "divider",
-        borderRadius: 2,
-        borderLeftWidth: 4,
-        borderLeftColor:
-          severity === "error"
-            ? "error.main"
-            : severity === "warning"
-              ? "warning.main"
-              : severity === "success"
-                ? "success.main"
-                : severity === "info"
-                  ? "secondary.main"
-                  : t.palette.divider,
-        bgcolor:
-          severity === "error"
-            ? "rgba(239,68,68,0.07)"
-            : severity === "warning"
-              ? "rgba(249,115,22,0.07)"
-              : severity === "success"
-                ? "rgba(34,197,94,0.07)"
-                : severity === "info"
-                  ? "rgba(56,189,248,0.06)"
-                  : "rgba(255,255,255,0.02)",
-        "&:before": { display: "none" },
-        overflow: "hidden",
-      })}
+      sx={(t) => {
+        const isDark = t.palette.mode === "dark";
+        const neutralBg = isDark
+          ? alpha(t.palette.common.white, 0.04)
+          : alpha(t.palette.common.black, 0.03);
+        return {
+          border: 1,
+          borderColor: "divider",
+          borderRadius: 2,
+          borderLeftWidth: 4,
+          borderLeftColor:
+            severity === "error"
+              ? "error.main"
+              : severity === "warning"
+                ? "warning.main"
+                : severity === "success"
+                  ? "success.main"
+                  : severity === "info"
+                    ? "secondary.main"
+                    : t.palette.divider,
+          bgcolor:
+            severity === "error"
+              ? alpha(t.palette.error.main, isDark ? 0.12 : 0.08)
+              : severity === "warning"
+                ? alpha(t.palette.warning.main, isDark ? 0.12 : 0.08)
+                : severity === "success"
+                  ? alpha(t.palette.success.main, isDark ? 0.12 : 0.08)
+                  : severity === "info"
+                    ? alpha(t.palette.secondary.main, isDark ? 0.1 : 0.08)
+                    : neutralBg,
+          boxShadow: isDark
+            ? `0 1px 0 ${alpha("#fff", 0.04)} inset`
+            : `0 1px 0 ${alpha("#fff", 0.9)} inset`,
+          "&:before": { display: "none" },
+          overflow: "hidden",
+        };
+      }}
     >
       <AccordionSummary
         expandIcon={

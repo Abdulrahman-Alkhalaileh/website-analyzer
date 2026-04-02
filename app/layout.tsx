@@ -5,6 +5,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { Providers } from "@/components/providers/Providers";
 import { buildPrimaryJsonLd } from "@/helpers/seo-graph";
+import { BRAND_SHORT_NAME } from "@/helpers/brand";
 import {
   getSiteUrl,
   SITE_DESCRIPTION,
@@ -30,8 +31,13 @@ export const metadata: Metadata = {
     "Google PageSpeed",
     "web performance",
   ],
+  applicationName: BRAND_SHORT_NAME,
   authors: [{ name: SITE_NAME }],
   creator: SITE_NAME,
+  icons: {
+    icon: [{ url: "/icon", type: "image/png", sizes: "32x32" }],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+  },
   robots: { index: true, follow: true },
   alternates: { canonical: "/" },
   openGraph: {
@@ -74,7 +80,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${plusJakarta.variable} h-full antialiased`}>
+    <html
+      lang="en"
+      className={`${plusJakarta.variable} h-full antialiased`}
+      data-theme="dark"
+      suppressHydrationWarning
+    >
       <body className="min-h-full">
         <JsonLd data={buildPrimaryJsonLd()} />
         <AppRouterCacheProvider>

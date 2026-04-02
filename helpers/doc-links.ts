@@ -11,6 +11,8 @@ export const LINKS = {
   lighthouseIndex: "https://developer.chrome.com/docs/lighthouse/",
   /** Performance category hub (metrics, opportunities, filmstrip lives in the report) */
   lighthousePerformance: "https://developer.chrome.com/docs/lighthouse/performance/",
+  /** Lighthouse SEO category (meta tags, crawlability, structured data, etc.) */
+  lighthouseSeo: "https://developer.chrome.com/docs/lighthouse/seo/",
   lighthouseScoring:
     "https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/",
   chromeUxReport: "https://developer.chrome.com/docs/crux/about/",

@@ -1,29 +1,42 @@
 @import "tailwindcss";
 
-/* Matches MUI theme typography + hero column (maxWidth 720, text.secondary-ish). */
+/* Refined wordmark + lead (hero h2 carries the big display line). */
 .seo-intro {
   max-width: 720px;
 }
 
 .seo-intro__title {
-  font-size: 1.85rem;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.2;
-}
-
-@media (min-width: 900px) {
-  .seo-intro__title {
-    font-size: 2.5rem;
-  }
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(167, 139, 250, 0.95);
+  line-height: 1.4;
+  margin: 0;
 }
 
 .seo-intro__lead {
-  margin-top: 12px;
-  font-size: 1rem;
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.62);
+  margin-top: 10px;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  max-width: 36rem;
+}
+
+@media (min-width: 600px) {
+  .seo-intro__lead {
+    font-size: 1.125rem;
+  }
+}
+
+/* Subtle grid over landing (used with LandingBackdrop). */
+.landing-ambient-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 0%, #000 20%, transparent 72%);
 }
 
 .seo-faq {
@@ -57,4 +70,35 @@
   font-size: 0.875rem;
   line-height: 1.65;
   color: rgba(255, 255, 255, 0.62);
+}
+
+/* Plain HTML SEO blocks (sync with MUI palette via Providers + data-theme). */
+html[data-theme="light"] .seo-intro__title {
+  color: #6D28D9;
+}
+
+html[data-theme="light"] .landing-ambient-grid {
+  background-image:
+    linear-gradient(rgba(15, 23, 42, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
+}
+
+html[data-theme="light"] .seo-intro__lead {
+  color: rgba(15, 23, 42, 0.68);
+}
+
+html[data-theme="light"] .seo-faq {
+  border-top-color: rgba(15, 23, 42, 0.12);
+}
+
+html[data-theme="light"] .seo-faq__title {
+  color: rgba(15, 23, 42, 0.92);
+}
+
+html[data-theme="light"] .seo-faq__q {
+  color: rgba(15, 23, 42, 0.88);
+}
+
+html[data-theme="light"] .seo-faq__a {
+  color: rgba(15, 23, 42, 0.62);
 }

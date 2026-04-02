@@ -20,6 +20,7 @@ export function buildPrimaryJsonLd(): Record<string, unknown> {
         "@id": `${url}/#organization`,
         name: SITE_NAME,
         url,
+        logo: `${url}/icon`,
       },
       {
         "@type": "WebApplication",
