@@ -3,7 +3,7 @@ import type {
   LighthouseDetailItem,
   LoadingExperience,
 } from "@/helpers/types/pagespeed";
-import { normalizeImageDataUrl } from "@/helpers/utils/image";
+import { normalizeImageDataUrl } from "@/helpers/image";
 
 export function formatBytes(bytes: number): string {
   if (!Number.isFinite(bytes) || bytes <= 0) return "0 B";

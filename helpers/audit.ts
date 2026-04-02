@@ -3,7 +3,7 @@ import type {
   LighthouseResult,
   PageSpeedApiResponse,
 } from "@/helpers/types/pagespeed";
-import { normalizeImageDataUrl } from "@/helpers/utils/image";
+import { normalizeImageDataUrl } from "@/helpers/image";
 import {
   extractEntities,
   extractFieldMetrics,
