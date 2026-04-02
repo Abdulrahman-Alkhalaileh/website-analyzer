@@ -212,11 +212,12 @@ export function LandingHero({
                       component="span"
                       variant="caption"
                       fontWeight={600}
+                      pb={1}
+                      display="inline-block"
                     >
                       strategy
                     </Typography>{" "}
-                    parameter. Mobile and desktop are separate Lighthouse runs
-                    (not the same screenshot resized).
+                    parameter. Mobile and desktop are separate Lighthouse runs.
                   </Typography>
                   <ToggleButtonGroup
                     exclusive
@@ -262,7 +263,8 @@ export function LandingHero({
                       <ComputerIcon fontSize="small" sx={{ mr: 0.5 }} /> Desktop
                     </ToggleButton>
                     <ToggleButton value="mobile">
-                      <SmartphoneIcon fontSize="small" sx={{ mr: 0.5 }} /> Mobile
+                      <SmartphoneIcon fontSize="small" sx={{ mr: 0.5 }} />{" "}
+                      Mobile
                     </ToggleButton>
                   </ToggleButtonGroup>
                 </Stack>

@@ -56,17 +56,22 @@ export function AnalysisLoadingOverlay({
 
   if (!open) return null;
 
-  const scrim = isDark
-    ? alpha("#000000", 0.72)
-    : alpha("#0f172a", 0.36);
+  const scrim = isDark ? alpha("#000000", 0.72) : alpha("#0f172a", 0.36);
 
   const panelBg = isDark
-    ? `linear-gradient(155deg, ${alpha("#fff", 0.08)} 0%, ${alpha("#fff", 0.02)} 40%, ${alpha(theme.palette.primary.main, 0.1)} 100%)`
-    : `linear-gradient(155deg, ${alpha("#fff", 0.58)} 0%, ${alpha("#fff", 0.28)} 42%, ${alpha(theme.palette.primary.main, 0.12)} 100%)`;
+    ? `linear-gradient(155deg, ${alpha("#fff", 0.08)} 0%, ${alpha(
+        "#fff",
+        0.02
+      )} 40%, ${alpha(theme.palette.primary.main, 0.1)} 100%)`
+    : "#ffffff80";
 
-  const panelShadow = isDark
-    ? `0 0 0 1px ${alpha("#fff", 0.05)}, 0 28px 80px -20px rgba(0,0,0,0.65), 0 0 60px -20px ${alpha(theme.palette.primary.main, 0.25)}`
-    : `0 0 0 1px ${alpha("#fff", 0.55)}, 0 0 0 1px ${alpha("#0f172a", 0.06)} inset, 0 20px 48px -12px ${alpha("#0f172a", 0.12)}, 0 0 48px -14px ${alpha(theme.palette.primary.main, 0.22)}`;
+  const panelShadow = `0 0 0 1px ${alpha(
+    "#fff",
+    0.05
+  )}, 0 28px 80px -20px rgba(0,0,0,0.65), 0 0 60px -20px ${alpha(
+    theme.palette.primary.main,
+    0.25
+  )}`;
 
   return (
     <Stack
@@ -100,11 +105,9 @@ export function AnalysisLoadingOverlay({
           p: { xs: 3, sm: 4 },
           borderRadius: 3,
           border: 1,
-          borderColor: isDark ? alpha("#fff", 0.1) : alpha("#fff", 0.72),
+          borderColor: isDark ? alpha("#fff", 0.1) : alpha("#fff", 0.2),
           background: panelBg,
-          backdropFilter: isDark
-            ? "blur(20px)"
-            : "blur(24px) saturate(1.15)",
+          backdropFilter: isDark ? "blur(20px)" : "blur(24px) saturate(1.15)",
           boxShadow: panelShadow,
           overflow: "hidden",
         }}
@@ -126,7 +129,10 @@ export function AnalysisLoadingOverlay({
                 position: "absolute",
                 inset: 8,
                 borderRadius: "50%",
-                border: `2px solid ${alpha(theme.palette.secondary.main, 0.45)}`,
+                border: `2px solid ${alpha(
+                  theme.palette.secondary.main,
+                  0.45
+                )}`,
               }}
               animate={{ rotate: -360 }}
               transition={{ duration: 5.5, repeat: Infinity, ease: "linear" }}
@@ -157,7 +163,11 @@ export function AnalysisLoadingOverlay({
         </Stack>
 
         <Stack gap={1}>
-          <Stack direction="row" justifyContent="space-between" alignItems="center">
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            alignItems="center"
+          >
             <Typography variant="caption" color="text.secondary">
               Lab measurement in progress
             </Typography>
@@ -189,7 +199,12 @@ export function AnalysisLoadingOverlay({
           />
         </Stack>
 
-        <Stack direction="row" justifyContent="center" gap={0.75} sx={{ height: 40 }}>
+        <Stack
+          direction="row"
+          justifyContent="center"
+          gap={0.75}
+          sx={{ height: 40 }}
+        >
           {Array.from({ length: BAR_COUNT }).map((_, i) => (
             <WaveBar key={i} index={i} />
           ))}

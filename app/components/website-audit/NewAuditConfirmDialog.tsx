@@ -63,10 +63,7 @@ export function NewAuditConfirmDialog({
                 "#fff",
                 0.02
               )} 40%, ${alpha(theme.palette.primary.main, 0.1)} 100%)`
-            : `linear-gradient(155deg, ${alpha("#fff", 0.58)} 0%, ${alpha(
-                "#fff",
-                0.28
-              )} 42%, ${alpha(theme.palette.primary.main, 0.12)} 100%)`,
+            : "#ffffff80",
           backdropFilter: isDark ? "blur(20px)" : "blur(24px) saturate(1.15)",
           boxShadow: isDark
             ? `0 0 0 1px ${alpha(
@@ -76,7 +73,13 @@ export function NewAuditConfirmDialog({
                 theme.palette.primary.main,
                 0.25
               )}`
-            : `0 0 0 1px ${alpha("#fff", 0.55)}, 0 0 0 1px ${alpha("#0f172a", 0.06)} inset, 0 20px 48px -12px ${alpha("#0f172a", 0.12)}, 0 0 48px -14px ${alpha(theme.palette.primary.main, 0.22)}`,
+            : `0 0 0 1px ${alpha("#fff", 0.55)}, 0 0 0 1px ${alpha(
+                "#0f172a",
+                0.06
+              )} inset, 0 20px 48px -12px ${alpha(
+                "#0f172a",
+                0.12
+              )}, 0 0 48px -14px ${alpha(theme.palette.primary.main, 0.22)}`,
           overflow: "hidden",
         },
       }}
