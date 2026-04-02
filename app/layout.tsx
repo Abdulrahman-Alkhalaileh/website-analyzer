@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { Providers } from "@/components/providers/Providers";
 import { buildPrimaryJsonLd } from "@/helpers/seo-graph";
 import { BRAND_SHORT_NAME } from "@/helpers/brand";
+import { getAuthorDisplayName, getAuthorGithubUrl } from "@/helpers/author";
 import {
   getSiteUrl,
   SITE_DESCRIPTION,
@@ -13,6 +14,11 @@ import {
 } from "@/helpers/site";
 
 const siteUrl = getSiteUrl();
+const creatorName = getAuthorDisplayName();
+const creatorGithub = getAuthorGithubUrl();
+const metadataAuthors = creatorName
+  ? [{ name: creatorName, ...(creatorGithub ? { url: creatorGithub } : {}) }]
+  : [{ name: SITE_NAME }];
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -32,8 +38,8 @@ export const metadata: Metadata = {
     "web performance",
   ],
   applicationName: BRAND_SHORT_NAME,
-  authors: [{ name: SITE_NAME }],
-  creator: SITE_NAME,
+  authors: metadataAuthors,
+  creator: creatorName || SITE_NAME,
   icons: {
     icon: [{ url: "/icon", type: "image/png", sizes: "32x32" }],
     apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],

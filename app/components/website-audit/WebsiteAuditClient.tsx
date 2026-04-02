@@ -7,6 +7,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { AnalysisLoadingOverlay } from "@/app/components/website-audit/AnalysisLoadingOverlay";
+import { AuthorWatermark } from "@/components/feedback/AuthorWatermark";
 import { LandingBackdrop } from "@/components/feedback/LandingBackdrop";
 import { ResultsHero } from "@/components/feedback/ResultsHero";
 import { ThemeModeToggle } from "@/components/feedback/ThemeModeToggle";
@@ -466,6 +467,8 @@ export function WebsiteAuditClient({
             ) : null}
 
             {seoFaq}
+
+            <AuthorWatermark />
           </Stack>
         </Container>
       </Stack>
