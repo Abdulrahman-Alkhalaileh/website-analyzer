@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export interface NewAuditConfirmDialogProps {
   open: boolean;
@@ -143,17 +144,37 @@ export function NewAuditConfirmDialog({
               color="text.secondary"
               sx={{ lineHeight: 1.65 }}
             >
-              Your current Lighthouse run, scores, filmstrip, metrics, and issue
-              list live only in this session. Starting over{" "}
+              You&apos;re not signed in, so this audit is{" "}
               <Typography
                 component="span"
                 variant="body2"
                 fontWeight={700}
                 color="text.primary"
               >
-                clears all of that
+                not saved
+              </Typography>{" "}
+              to your account—only kept in this browser tab.{" "}
+              <Typography
+                component="span"
+                variant="body2"
+                fontWeight={700}
+                color="text.primary"
+              >
+                Sign in
+              </Typography>{" "}
+              to save audits to your dashboard and open them again anytime.
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ lineHeight: 1.65, mt: 1.5 }}>
+              Starting a new audit{" "}
+              <Typography
+                component="span"
+                variant="body2"
+                fontWeight={700}
+                color="text.primary"
+              >
+                clears what you see now
               </Typography>
-              —you&apos;ll need to analyze again to get them back.
+              —you&apos;ll need to run PageSpeed again to get these results back.
             </Typography>
             {analyzedUrl ? (
               <Box
@@ -200,6 +221,21 @@ export function NewAuditConfirmDialog({
           justifyContent: "flex-end",
         }}
       >
+        <Button
+          component={Link}
+          href="/auth/login"
+          variant="outlined"
+          size="large"
+          onClick={onClose}
+          sx={{
+            borderRadius: 2,
+            fontWeight: 600,
+            borderWidth: 2,
+            "&:hover": { borderWidth: 2 },
+          }}
+        >
+          Sign in to save audits
+        </Button>
         <Button
           variant="outlined"
           size="large"

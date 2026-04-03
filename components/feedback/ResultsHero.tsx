@@ -11,13 +11,14 @@ import {
 import { alpha } from "@mui/material/styles";
 import { motion, useReducedMotion } from "framer-motion";
 import { BrandMark } from "@/components/brand/BrandMark";
-import type { LabStrategy } from "@/helpers/audit";
+import { scoreToBarPercent, type LabStrategy } from "@/helpers/audit";
 
 export interface ResultsHeroProps {
   finalUrl: string | null;
   performanceScore: number | null;
   labStrategy: LabStrategy;
-  onNewAudit: () => void;
+  /** Omit when showing a read-only saved report (no “New audit” control). */
+  onNewAudit?: () => void | Promise<void>;
 }
 
 export function ResultsHero({
@@ -37,6 +38,9 @@ export function ResultsHero({
   const spring = reduce
     ? { duration: 0.2 }
     : { type: "spring" as const, stiffness: 78, damping: 19 };
+
+  const perfPercent =
+    performanceScore == null ? null : scoreToBarPercent(performanceScore);
 
   return (
     <Stack
@@ -120,14 +124,14 @@ export function ResultsHero({
                     bgcolor: alpha(theme.palette.primary.main, isDark ? 0.12 : 0.08),
                   }}
                 />
-                {performanceScore != null ? (
+                {perfPercent != null ? (
                   <Chip
                     size="small"
-                    label={`Performance ${Math.round(performanceScore)}`}
+                    label={`Performance ${perfPercent}`}
                     color={
-                      performanceScore >= 90
+                      perfPercent >= 90
                         ? "success"
-                        : performanceScore >= 50
+                        : perfPercent >= 50
                           ? "warning"
                           : "error"
                     }
@@ -138,22 +142,24 @@ export function ResultsHero({
               </Stack>
             </Stack>
           </Stack>
-          <Button
-            variant="outlined"
-            size="large"
-            onClick={onNewAudit}
-            sx={{
-              flexShrink: 0,
-              alignSelf: { xs: "stretch", sm: "center" },
-              borderRadius: 2,
-              fontWeight: 600,
-              borderWidth: 2,
-              px: 2.5,
-              "&:hover": { borderWidth: 2 },
-            }}
-          >
-            New audit
-          </Button>
+          {onNewAudit ? (
+            <Button
+              variant="outlined"
+              size="large"
+              onClick={onNewAudit}
+              sx={{
+                flexShrink: 0,
+                alignSelf: { xs: "stretch", sm: "center" },
+                borderRadius: 2,
+                fontWeight: 600,
+                borderWidth: 2,
+                px: 2.5,
+                "&:hover": { borderWidth: 2 },
+              }}
+            >
+              New audit
+            </Button>
+          ) : null}
         </Stack>
       </Box>
     </Stack>
