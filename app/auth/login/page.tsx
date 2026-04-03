@@ -13,7 +13,7 @@ import {
   TextField,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { AuthPageLayout } from "@/app/auth/components/AuthPageLayout";
 import { supabase } from "@/lib/supabase";
 
@@ -25,6 +25,7 @@ export default function LoginPage() {
   const [severity, setSeverity] = useState<"error" | "success">("error");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showResend, setShowResend] = useState(false);
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
@@ -46,6 +47,18 @@ export default function LoginPage() {
     router.refresh();
   };
 
+  useEffect(() => {
+    if (message.includes("confirm")) {
+      setTimeout(() => {
+        setShowResend(true);
+      }, 1000);
+      return;
+    }
+    setTimeout(() => {
+      setShowResend(false);
+    }, 1000);
+  }, [message]);
+
   return (
     <AuthPageLayout
       title="Welcome back"
@@ -57,6 +70,18 @@ export default function LoginPage() {
           {message ? (
             <Alert severity={severity} variant="outlined">
               {message}
+              {showResend ? (
+                <Button
+                  color="primary"
+                  size="small"
+                  sx={{ px: 1 }}
+                  onClick={() => {
+                    void supabase.auth.resend({ type: "signup", email: email });
+                  }}
+                >
+                  Resend verification email
+                </Button>
+              ) : null}
             </Alert>
           ) : null}
 
@@ -88,7 +113,9 @@ export default function LoginPage() {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                       onClick={() => setShowPassword((v) => !v)}
                       edge="end"
                       size="small"
@@ -108,7 +135,9 @@ export default function LoginPage() {
             size="large"
             disabled={loading}
             startIcon={
-              loading ? <CircularProgress size={20} color="inherit" aria-hidden /> : undefined
+              loading ? (
+                <CircularProgress size={20} color="inherit" aria-hidden />
+              ) : undefined
             }
             sx={{ mt: 0.5, fontWeight: 700 }}
           >

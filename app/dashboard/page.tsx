@@ -69,8 +69,8 @@ const Page: FC = () => {
           color="text.secondary"
           sx={{ maxWidth: 560 }}
         >
-          One card per website (domain). Open a card to see every saved audit,
-          scores, and links to the full report on the home page.
+          Welcome back! View your saved website audits and track performance
+          over time. You can also run new audits to see how your site is doing.
         </Typography>
       </Stack>
 

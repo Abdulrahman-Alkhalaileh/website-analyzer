@@ -13,7 +13,7 @@ const Protected: React.FC<ProtectedProps> = ({ children }) => {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session) {
-        redirect("/");
+        redirect("/auth/login");
       } else {
         setIsProtected(true);
       }

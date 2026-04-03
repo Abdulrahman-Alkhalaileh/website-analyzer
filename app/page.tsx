@@ -1,6 +1,7 @@
 import { HomeSeoFaq } from "@/app/components/HomeSeoFaq";
 import { HomeSeoIntro } from "@/app/components/HomeSeoIntro";
 import { WebsiteAuditClient } from "@/app/components/website-audit/WebsiteAuditClient";
+import { Suspense } from "react";
 
 export default function HomePage() {
   return (
@@ -14,10 +15,20 @@ export default function HomePage() {
           JavaScript in your browser.
         </p>
       </noscript>
-      <WebsiteAuditClient
-        seoIntro={<HomeSeoIntro />}
-        seoFaq={<HomeSeoFaq />}
-      />
+      <Suspense
+        fallback={
+          <div
+            className="min-h-screen"
+            style={{ backgroundColor: "#0B0B0B" }}
+            aria-hidden
+          />
+        }
+      >
+        <WebsiteAuditClient
+          seoIntro={<HomeSeoIntro />}
+          seoFaq={<HomeSeoFaq />}
+        />
+      </Suspense>
     </main>
   );
 }

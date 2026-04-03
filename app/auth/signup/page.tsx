@@ -15,6 +15,7 @@ import {
 import { useState, type FormEvent } from "react";
 import { AuthPageLayout } from "@/app/auth/components/AuthPageLayout";
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -23,6 +24,7 @@ export default function SignUpPage() {
   const [severity, setSeverity] = useState<"error" | "success">("error");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const handleSignUp = async (e: FormEvent) => {
     e.preventDefault();
@@ -42,13 +44,17 @@ export default function SignUpPage() {
     setMessage(
       "Account created. If email confirmation is enabled, check your inbox to verify before signing in."
     );
+    router.push("/auth/login");
   };
 
   return (
     <AuthPageLayout
       title="Create an account"
       subtitle="Use a strong password. You can run audits after you sign in."
-      alternate={{ href: "/auth/login", label: "Already have an account? Sign in" }}
+      alternate={{
+        href: "/auth/login",
+        label: "Already have an account? Sign in",
+      }}
     >
       <Box component="form" onSubmit={handleSignUp} noValidate>
         <Stack gap={2.25}>
@@ -87,7 +93,9 @@ export default function SignUpPage() {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      aria-label={showPassword ? "Hide password" : "Show password"}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                       onClick={() => setShowPassword((v) => !v)}
                       edge="end"
                       size="small"
@@ -107,7 +115,9 @@ export default function SignUpPage() {
             size="large"
             disabled={loading}
             startIcon={
-              loading ? <CircularProgress size={20} color="inherit" aria-hidden /> : undefined
+              loading ? (
+                <CircularProgress size={20} color="inherit" aria-hidden />
+              ) : undefined
             }
             sx={{ mt: 0.5, fontWeight: 700 }}
           >

@@ -7,11 +7,7 @@ import { Providers } from "@/components/providers/Providers";
 import { buildPrimaryJsonLd } from "@/helpers/seo-graph";
 import { BRAND_SHORT_NAME } from "@/helpers/brand";
 import { getAuthorDisplayName, getAuthorGithubUrl } from "@/helpers/author";
-import {
-  getSiteUrl,
-  SITE_DESCRIPTION,
-  SITE_NAME,
-} from "@/helpers/site";
+import { getSiteUrl, SITE_DESCRIPTION, SITE_NAME } from "@/helpers/site";
 
 const siteUrl = getSiteUrl();
 const creatorName = getAuthorDisplayName();

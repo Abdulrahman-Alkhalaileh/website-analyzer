@@ -184,6 +184,20 @@ export function scoreToBarPercent(score: number | null): number {
   return Math.max(0, Math.min(100, Math.round(score * 100)));
 }
 
+/**
+ * Lighthouse category scores are 0–1. Returns a rounded 0–100 average for storage or summaries.
+ */
+export function averageCategoryScoresAsPercent(
+  categoryScores: CategoryScores
+): number | null {
+  const vals = Object.values(categoryScores).filter(
+    (s): s is number => s != null && Number.isFinite(s)
+  );
+  if (vals.length === 0) return null;
+  const avg = vals.reduce((acc, curr) => acc + curr, 0) / vals.length;
+  return Math.max(0, Math.min(100, Math.round(avg * 100)));
+}
+
 function getAudit(
   audits: Record<string, LighthouseAudit> | undefined,
   id: string
@@ -417,4 +431,59 @@ export function buildAuditDashboard(
     networkHighlights,
     seoIssues,
   };
+}
+
+/**
+ * Parses JSON stored in `reports.data` (serialized {@link AuditDashboard} from a prior save).
+ * Normalizes missing arrays for older rows. Returns null if the shape is not usable.
+ */
+export function parseSavedAuditDashboard(input: unknown): AuditDashboard | null {
+  if (input == null || typeof input !== "object") return null;
+  const d = input as Partial<AuditDashboard>;
+  if (!d.categoryScores || typeof d.categoryScores !== "object") return null;
+  if (!d.runInfo || typeof d.runInfo !== "object") return null;
+  const ls = d.runInfo.labStrategy;
+  if (ls !== "mobile" && ls !== "desktop") return null;
+  if (!Array.isArray(d.issues)) return null;
+
+  return {
+    categoryScores: d.categoryScores,
+    coreWebVitals: Array.isArray(d.coreWebVitals) ? d.coreWebVitals : [],
+    labMetrics: Array.isArray(d.labMetrics) ? d.labMetrics : [],
+    screenshotData:
+      typeof d.screenshotData === "string" || d.screenshotData === null
+        ? d.screenshotData ?? null
+        : null,
+    filmstripFrames: Array.isArray(d.filmstripFrames) ? d.filmstripFrames : [],
+    finalScreenshotSrc:
+      typeof d.finalScreenshotSrc === "string" || d.finalScreenshotSrc === null
+        ? d.finalScreenshotSrc ?? null
+        : null,
+    issues: d.issues,
+    finalUrl: typeof d.finalUrl === "string" || d.finalUrl === null ? d.finalUrl ?? null : null,
+    runInfo: d.runInfo,
+    fieldDataUrl: Array.isArray(d.fieldDataUrl) ? d.fieldDataUrl : [],
+    fieldDataOrigin: Array.isArray(d.fieldDataOrigin) ? d.fieldDataOrigin : [],
+    fieldOverallUrl:
+      typeof d.fieldOverallUrl === "string" ? d.fieldOverallUrl : undefined,
+    fieldOverallOrigin:
+      typeof d.fieldOverallOrigin === "string" ? d.fieldOverallOrigin : undefined,
+    opportunities: Array.isArray(d.opportunities) ? d.opportunities : [],
+    resourceByType: Array.isArray(d.resourceByType) ? d.resourceByType : [],
+    thirdParties: Array.isArray(d.thirdParties) ? d.thirdParties : [],
+    entities: Array.isArray(d.entities) ? d.entities : [],
+    runWarnings: Array.isArray(d.runWarnings) ? d.runWarnings : [],
+    networkHighlights: Array.isArray(d.networkHighlights) ? d.networkHighlights : [],
+    seoIssues: Array.isArray(d.seoIssues) ? d.seoIssues : [],
+  };
+}
+
+/** Parse a JSON string from the DB into an {@link AuditDashboard}, or null. */
+export function parseSavedAuditDashboardJson(json: string | null | undefined): AuditDashboard | null {
+  if (json == null || json === "") return null;
+  try {
+    return parseSavedAuditDashboard(JSON.parse(json) as unknown);
+  } catch {
+    return null;
+  }
 }

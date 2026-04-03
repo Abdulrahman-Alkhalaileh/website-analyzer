@@ -340,7 +340,7 @@ export const WebsiteReportCard: FC<WebsiteReportCardProps> = ({
             </TableBody>
           </Table>
           <Typography variant="caption" color="text.secondary" sx={{ display: "block", mt: 2 }}>
-            Full PageSpeed JSON is restored on the home page for each run.
+            Opens your saved audit on the home page (restored from your dashboard).
           </Typography>
         </DialogContent>
       </Dialog>

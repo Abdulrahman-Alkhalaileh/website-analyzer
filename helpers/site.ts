@@ -16,3 +16,31 @@ export const SITE_DESCRIPTION =
  */
 export const SITE_PAGE_INTRO =
   "We run PageSpeed Insights for you and turn the report into a clear dashboard: scores, previews, vitals context, and fixes you can actually use.";
+
+export const AUTH_LOGIN_DESCRIPTION =
+  "Sign in to save PageSpeed and Lighthouse audits to your dashboard and reopen them anytime.";
+
+export const AUTH_SIGNUP_DESCRIPTION =
+  "Create a free account to save website audits to your dashboard and track performance over time.";
+
+/** Logged-in area: keep out of sitemap; allow follow for internal links only. */
+export const DASHBOARD_PAGE_DESCRIPTION =
+  "Your saved PageSpeed and Lighthouse audits: performance charts, sites grouped by domain, and links to reopen full reports.";
+
+export const AUTH_LOGIN_KEYWORDS: string[] = [
+  "sign in",
+  "login",
+  "save audits",
+  "PageSpeed dashboard",
+  "Lighthouse saved reports",
+  SITE_NAME,
+];
+
+export const AUTH_SIGNUP_KEYWORDS: string[] = [
+  "sign up",
+  "create account",
+  "free account",
+  "save website audits",
+  "performance monitoring",
+  SITE_NAME,
+];
