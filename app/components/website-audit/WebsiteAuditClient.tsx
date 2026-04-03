@@ -5,7 +5,7 @@ import { alpha } from "@mui/material/styles";
 import axios from "axios";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AnalysisLoadingOverlay } from "@/app/components/website-audit/AnalysisLoadingOverlay";
 import { AuthorWatermark } from "@/components/feedback/AuthorWatermark";
 import { LandingBackdrop } from "@/components/feedback/LandingBackdrop";
@@ -33,6 +33,8 @@ import {
 } from "@/helpers/audit";
 import { LINKS } from "@/helpers/doc-links";
 import type { PageSpeedApiResponse } from "@/helpers/types/pagespeed";
+import { supabase } from "@/lib/supabase";
+import UserMenu from "@/components/menu/UserMenu";
 
 export function WebsiteAuditClient({
   seoIntro,
@@ -79,11 +81,45 @@ export function WebsiteAuditClient({
     }
   };
 
+  const saveReport = useCallback(
+    async (dashboard: PageSpeedApiResponse) => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user?.id) return;
+
+      const scores = Object.values(
+        dashboard.lighthouseResult?.categories ?? {}
+      ).filter((category) => category.score !== null);
+
+      const score =
+        Math.round(
+          scores.reduce((acc, curr) => acc + (curr.score ?? 0), 0) /
+            scores.length
+        ) * 100;
+
+      const data = JSON.stringify(dashboard);
+      const { error } = await supabase.from("reports").insert({
+        user_id: user.id,
+        url: dashboard.lighthouseResult?.finalUrl,
+        score,
+        data,
+        device: strategy,
+      });
+      if (error) {
+        console.error(error);
+      } else {
+        console.log("Report saved successfully");
+      }
+    },
+    [strategy]
+  );
+
   useEffect(() => {
-    if (!loading && dashboard) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+    if (data) {
+      saveReport(data);
     }
-  }, [loading, dashboard]);
+  }, [data, saveReport]);
 
   const hasFieldData =
     Boolean(dashboard?.fieldOverallUrl) ||
@@ -139,7 +175,9 @@ export function WebsiteAuditClient({
                 direction="row"
                 justifyContent="flex-end"
                 alignItems="center"
+                gap={2}
               >
+                <UserMenu />
                 <Box
                   sx={{
                     borderRadius: 999,
