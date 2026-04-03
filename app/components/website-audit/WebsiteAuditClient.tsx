@@ -1,16 +1,14 @@
 "use client";
 
-import { Box, Button, Container, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import { alpha } from "@mui/material/styles";
 import axios from "axios";
 import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 import { useCallback, useEffect, useState } from "react";
 import { AnalysisLoadingOverlay } from "@/app/components/website-audit/AnalysisLoadingOverlay";
-import { AuthorWatermark } from "@/components/feedback/AuthorWatermark";
-import { LandingBackdrop } from "@/components/feedback/LandingBackdrop";
+import { AppPageChrome } from "@/components/layout/AppPageChrome";
 import { ResultsHero } from "@/components/feedback/ResultsHero";
-import { ThemeModeToggle } from "@/components/feedback/ThemeModeToggle";
 import { ScoreCardsRow } from "@/components/cards/ScoreCardsRow";
 import { WebsitePreviewCard } from "@/components/cards/WebsitePreviewCard";
 import { DashboardSection } from "@/components/sections/DashboardSection";
@@ -28,13 +26,13 @@ import { LandingHero } from "./LandingHero";
 import { NewAuditConfirmDialog } from "./NewAuditConfirmDialog";
 import {
   buildAuditDashboard,
+  type AuditDashboard,
   validateHttpUrl,
   type LabStrategy,
 } from "@/helpers/audit";
 import { LINKS } from "@/helpers/doc-links";
 import type { PageSpeedApiResponse } from "@/helpers/types/pagespeed";
 import { supabase } from "@/lib/supabase";
-import UserMenu from "@/components/menu/UserMenu";
 
 export function WebsiteAuditClient({
   seoIntro,
@@ -82,29 +80,30 @@ export function WebsiteAuditClient({
   };
 
   const saveReport = useCallback(
-    async (dashboard: PageSpeedApiResponse) => {
+    async (dashboard: AuditDashboard) => {
       const {
         data: { user },
       } = await supabase.auth.getUser();
       if (!user?.id) return;
 
       const scores = Object.values(
-        dashboard.lighthouseResult?.categories ?? {}
-      ).filter((category) => category.score !== null);
+        dashboard.categoryScores
+      ).filter((category) => category !== null);
 
       const score =
         Math.round(
-          scores.reduce((acc, curr) => acc + (curr.score ?? 0), 0) /
+          scores.reduce((acc, curr) => acc + (curr ?? 0), 0) /
             scores.length
         ) * 100;
 
       const data = JSON.stringify(dashboard);
       const { error } = await supabase.from("reports").insert({
         user_id: user.id,
-        url: dashboard.lighthouseResult?.finalUrl,
+        url: dashboard.finalUrl,
         score,
         data,
         device: strategy,
+        image: dashboard.finalScreenshotSrc,
       });
       if (error) {
         console.error(error);
@@ -116,10 +115,10 @@ export function WebsiteAuditClient({
   );
 
   useEffect(() => {
-    if (data) {
-      saveReport(data);
+    if (dashboard) {
+      saveReport(dashboard);
     }
-  }, [data, saveReport]);
+  }, [dashboard, saveReport]);
 
   const hasFieldData =
     Boolean(dashboard?.fieldOverallUrl) ||
@@ -149,54 +148,8 @@ export function WebsiteAuditClient({
         targetUrl={url.trim()}
       />
 
-      <Stack
-        sx={{
-          position: "relative",
-          minHeight: "100vh",
-          bgcolor: "background.default",
-          py: { xs: 4, md: 6 },
-          overflow: "hidden",
-        }}
-      >
-        {!data ? <LandingBackdrop /> : null}
-        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
-          <Stack gap={6}>
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                type: "spring",
-                stiffness: 120,
-                damping: 22,
-                delay: 0.02,
-              }}
-            >
-              <Stack
-                direction="row"
-                justifyContent="flex-end"
-                alignItems="center"
-                gap={2}
-              >
-                <UserMenu />
-                <Box
-                  sx={{
-                    borderRadius: 999,
-                    border: 1,
-                    borderColor: "divider",
-                    bgcolor: (t) => alpha(t.palette.background.paper, 0.72),
-                    backdropFilter: "blur(12px)",
-                    px: 0.25,
-                    boxShadow: (t) =>
-                      `0 0 0 1px ${alpha(
-                        t.palette.common.white,
-                        t.palette.mode === "dark" ? 0.06 : 0
-                      )}`,
-                  }}
-                >
-                  <ThemeModeToggle />
-                </Box>
-              </Stack>
-            </motion.div>
+      <AppPageChrome showAmbient={!data}>
+        <Stack gap={6}>
             {!data ? (
               <Stack gap={2.5} sx={{ maxWidth: 720 }}>
                 <motion.div
@@ -505,11 +458,8 @@ export function WebsiteAuditClient({
             ) : null}
 
             {seoFaq}
-
-            <AuthorWatermark />
-          </Stack>
-        </Container>
-      </Stack>
+        </Stack>
+      </AppPageChrome>
     </>
   );
 }
