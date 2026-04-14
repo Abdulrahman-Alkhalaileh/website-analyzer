@@ -1,45 +1,43 @@
 "use client";
 
-import { Box, useTheme } from "@mui/material";
-import { motion, useReducedMotion } from "framer-motion";
+import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { alpha } from "@mui/material/styles";
 
-/** Soft gradient orbs + grid — only for the pre-results landing. */
 export function LandingBackdrop() {
   const theme = useTheme();
-  const reduce = useReducedMotion();
   const isDark = theme.palette.mode === "dark";
+  const reduceMotion = useMediaQuery("(prefers-reduced-motion: reduce)", {
+    noSsr: true,
+  });
 
-  const purple = isDark ? "rgba(139, 92, 246, 0.28)" : "rgba(124, 58, 237, 0.2)";
-  const cyan = isDark ? "rgba(56, 189, 248, 0.14)" : "rgba(3, 105, 161, 0.14)";
-  const violet = isDark ? "rgba(109, 40, 217, 0.2)" : "rgba(91, 33, 182, 0.12)";
+  const purple = isDark
+    ? "rgba(139, 92, 246, 0.22)"
+    : "rgba(124, 58, 237, 0.14)";
+  const cyan = isDark ? "rgba(56, 189, 248, 0.12)" : "rgba(3, 105, 161, 0.1)";
 
-  const drift = (duration: number, delay = 0) =>
-    reduce
-      ? {}
-      : {
-          animate: {
-            y: [0, -20, 0],
-            x: [0, 12, 0],
-            scale: [1, 1.05, 1],
-          },
-          transition: {
-            duration,
-            repeat: Infinity,
-            ease: "easeInOut" as const,
-            delay,
-          },
-        };
-
-  const pulse = reduce
-    ? {}
-    : {
-        animate: { opacity: [0.45, 0.75, 0.45] },
-        transition: {
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut" as const,
-        },
-      };
+  if (reduceMotion) {
+    return (
+      <Box
+        aria-hidden
+        sx={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 0,
+          pointerEvents: "none",
+          overflow: "hidden",
+          background: isDark
+            ? `radial-gradient(ellipse 90% 55% at 50% -15%, ${alpha(
+                theme.palette.primary.main,
+                0.18
+              )}, transparent 60%)`
+            : `radial-gradient(ellipse 90% 55% at 50% -15%, ${alpha(
+                theme.palette.primary.main,
+                0.12
+              )}, transparent 60%)`,
+        }}
+      />
+    );
+  }
 
   return (
     <Box
@@ -51,56 +49,44 @@ export function LandingBackdrop() {
         zIndex: 0,
         pointerEvents: "none",
         overflow: "hidden",
+        isolation: "isolate",
       }}
     >
-      <motion.div
-        style={{
+      <Box
+        sx={{
           position: "absolute",
-          top: "-18%",
-          right: "-12%",
-          width: "min(62vw, 520px)",
+          top: "-14%",
+          right: "-8%",
+          width: "min(58vw, 400px)",
           aspectRatio: "1",
           borderRadius: "50%",
           background: purple,
-          filter: "blur(72px)",
+          filter: "blur(40px)",
+          transform: "translateZ(0)",
         }}
-        {...drift(18, 0)}
       />
-      <motion.div
-        style={{
+      <Box
+        sx={{
           position: "absolute",
-          top: "32%",
-          left: "-20%",
-          width: "min(55vw, 420px)",
+          bottom: "-6%",
+          left: "-12%",
+          width: "min(52vw, 340px)",
           aspectRatio: "1",
           borderRadius: "50%",
           background: cyan,
-          filter: "blur(64px)",
+          filter: "blur(36px)",
+          transform: "translateZ(0)",
         }}
-        {...drift(22, 2)}
       />
-      <motion.div
-        style={{
-          position: "absolute",
-          bottom: "-8%",
-          right: "18%",
-          width: "min(48vw, 360px)",
-          aspectRatio: "1",
-          borderRadius: "50%",
-          background: violet,
-          filter: "blur(56px)",
-        }}
-        {...drift(16, 1)}
-      />
-      <motion.div
-        style={{
+      <Box
+        sx={{
           position: "absolute",
           inset: 0,
           background: isDark
-            ? "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(139,92,246,0.12), transparent 55%)"
-            : "radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124,58,237,0.08), transparent 55%)",
+            ? "radial-gradient(ellipse 85% 48% at 50% -18%, rgba(139,92,246,0.1), transparent 58%)"
+            : "radial-gradient(ellipse 85% 48% at 50% -18%, rgba(124,58,237,0.07), transparent 58%)",
+          transform: "translateZ(0)",
         }}
-        {...pulse}
       />
     </Box>
   );
